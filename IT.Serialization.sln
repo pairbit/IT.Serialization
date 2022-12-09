@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IT.Serialization.Utf8Json",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IT.Serialization.Tests", "IT.Serialization.Tests\IT.Serialization.Tests.csproj", "{1E182161-90CB-41F6-BFDB-B50F7C0F7337}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IT.Serialization.MemoryPack", "IT.Serialization.MemoryPack\IT.Serialization.MemoryPack.csproj", "{244A4E9A-8CA6-45F0-8827-17024F137FFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{1E182161-90CB-41F6-BFDB-B50F7C0F7337}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E182161-90CB-41F6-BFDB-B50F7C0F7337}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E182161-90CB-41F6-BFDB-B50F7C0F7337}.Release|Any CPU.Build.0 = Release|Any CPU
+		{244A4E9A-8CA6-45F0-8827-17024F137FFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{244A4E9A-8CA6-45F0-8827-17024F137FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{244A4E9A-8CA6-45F0-8827-17024F137FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{244A4E9A-8CA6-45F0-8827-17024F137FFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
