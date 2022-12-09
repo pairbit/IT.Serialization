@@ -1,0 +1,1 @@
+﻿BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Serialization.Benchmarks.SerializeBenchmark));
