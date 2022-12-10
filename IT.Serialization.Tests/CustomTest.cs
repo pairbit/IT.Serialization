@@ -61,19 +61,26 @@ public class CustomTest
 
         Assert.That(city, Is.EqualTo(_city));
 
-        var path = @"C:\var\CustomTest.log";
+        var path = Path.Combine(Path.GetTempPath(), "CustomTest.log");
 
         File.Delete(path);
 
-        using var file = File.OpenWrite(path);
-        _serializer.Serialize(_city, file);
-        file.Close();
+        try
+        {
+            using var file = File.OpenWrite(path);
+            _serializer.Serialize(_city, file);
+            file.Close();
 
 
-        using var reader = File.OpenRead(path);
-        city = _serializer.Deserialize(reader);
-        reader.Close();
+            using var reader = File.OpenRead(path);
+            city = _serializer.Deserialize(reader);
+            reader.Close();
 
-        Assert.That(city, Is.EqualTo(_city));
+            Assert.That(city, Is.EqualTo(_city));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 }
