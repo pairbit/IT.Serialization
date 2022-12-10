@@ -18,7 +18,7 @@
 	<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	<PackageIcon>Icon.png</PackageIcon>
 	<PackageReleaseNotes>
-		new implementation
+		add net7.0
 	</PackageReleaseNotes>
 	<SignAssembly>true</SignAssembly>
 	<AssemblyOriginatorKeyFile>..\IT.snk</AssemblyOriginatorKeyFile>
