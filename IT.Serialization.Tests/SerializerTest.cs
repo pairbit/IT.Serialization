@@ -39,29 +39,39 @@ public abstract class SerializerTest
         Assert.That(person, Is.EqualTo(person2));
         Assert.That(person, Is.EqualTo(_person));
 
-        var path = @"C:\var\SerializerTest_Generic.log";
-        var path2 = @"C:\var\SerializerTest_Generic2.log";
+        var path = Path.Combine(Path.GetTempPath(), "SerializerTest_Generic.log");
+        var path2 = Path.Combine(Path.GetTempPath(), "SerializerTest_Generic2.log");
 
         File.Delete(path);
         File.Delete(path2);
-        using var file = File.OpenWrite(path);
-        _serializer.Serialize(_person, file);
-        file.Close();
 
-        using var file2 = File.OpenWrite(path2);
-        _serializerPerson.Serialize(_person, file2);
-        file2.Close();
+        try
+        {
+            using var file = File.OpenWrite(path);
+            _serializer.Serialize(_person, file);
+            file.Close();
 
-        using var reader = File.OpenRead(path);
-        person = _serializer.Deserialize<Person>(reader);
-        reader.Close();
+            using var file2 = File.OpenWrite(path2);
+            _serializerPerson.Serialize(_person, file2);
+            file2.Close();
 
-        using var reader2 = File.OpenRead(path2);
-        person2 = _serializerPerson.Deserialize(reader2);
-        reader.Close();
+            using var reader = File.OpenRead(path);
+            person = _serializer.Deserialize<Person>(reader);
+            reader.Close();
 
-        Assert.That(person, Is.EqualTo(person2));
-        Assert.That(person, Is.EqualTo(_person));
+            using var reader2 = File.OpenRead(path2);
+            person2 = _serializerPerson.Deserialize(reader2);
+            reader.Close();
+
+            Assert.That(person, Is.EqualTo(person2));
+            Assert.That(person, Is.EqualTo(_person));
+
+        }
+        finally
+        {
+            File.Delete(path);
+            File.Delete(path2);
+        }
     }
 
     [Test]
@@ -82,18 +92,25 @@ public abstract class SerializerTest
             Assert.That(_personObject, Is.EqualTo(person));
         });
 
-        var path = @"C:\var\SerializerTest_NonGeneric.log";
+        var path = Path.Combine(Path.GetTempPath(), @"SerializerTest_NonGeneric.log");
 
         File.Delete(path);
 
-        using var file = File.OpenWrite(path);
-        _serializer.Serialize(_person, file);
-        file.Close();
+        try
+        {
+            using var file = File.OpenWrite(path);
+            _serializer.Serialize(_person, file);
+            file.Close();
 
-        using var reader = File.OpenRead(path);
-        person = _serializer.Deserialize<Person>(reader);
-        reader.Close();
+            using var reader = File.OpenRead(path);
+            person = _serializer.Deserialize<Person>(reader);
+            reader.Close();
 
-        Assert.That(_person, Is.EqualTo(person));
+            Assert.That(_person, Is.EqualTo(person));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 }
