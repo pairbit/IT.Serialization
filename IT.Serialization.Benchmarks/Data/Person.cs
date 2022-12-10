@@ -2,7 +2,10 @@
 
 namespace IT.Serialization.Benchmarks.Data;
 
-public class MyList<T> : List<T>, IEquatable<MyList<T>>
+#if NETCOREAPP3_1_OR_GREATER
+[global::MemoryPack.MemoryPackable(global::MemoryPack.GenerateType.Collection)]
+#endif
+public partial class MyList<T> : List<T>, IEquatable<MyList<T>>
 {
     public MyList()
     {
@@ -12,6 +15,9 @@ public class MyList<T> : List<T>, IEquatable<MyList<T>>
     {
     }
 
+#if NETCOREAPP3_1_OR_GREATER
+    [global::MemoryPack.MemoryPackConstructor]
+#endif
     public MyList(IEnumerable<T> collection) : base(collection)
     {
     }
@@ -30,8 +36,11 @@ public class MyList<T> : List<T>, IEquatable<MyList<T>>
     }
 }
 
+#if NETCOREAPP3_1_OR_GREATER
+[global::MemoryPack.MemoryPackable]
+#endif
 [DataContract]
-public record Person
+public partial record Person
 {
     [DataMember(Order = 0)]
     public int Id { get; set; }

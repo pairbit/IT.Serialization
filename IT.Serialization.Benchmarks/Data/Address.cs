@@ -2,8 +2,11 @@
 
 namespace IT.Serialization.Benchmarks.Data;
 
+#if NETCOREAPP3_1_OR_GREATER
+[global::MemoryPack.MemoryPackable]
+#endif
 [DataContract]
-public record Address
+public partial record Address
 {
     [DataMember(Order = 0)]
     public short Number { get; set; }

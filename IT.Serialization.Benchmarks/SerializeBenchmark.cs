@@ -16,6 +16,8 @@ public class SerializeBenchmark
 
     private readonly ISerialization _jsonSerializer;
     private readonly byte[] _jsonSerializerBytes;
+    private readonly ISerialization _memoryPackSerializer;
+    private readonly byte[] _memoryPackSerializerBytes;
     private readonly ISerialization _messagePackSerializer;
     private readonly byte[] _messagePackSerializerBytes;
     private readonly ISerialization _utf8jsonSerializer;
@@ -25,6 +27,8 @@ public class SerializeBenchmark
     {
         _jsonSerializer = new Json.TextSerialization();
         _jsonSerializerBytes = Json_Serialize();
+        _memoryPackSerializer = new MemoryPack.Serialization();
+        _memoryPackSerializerBytes = MemoryPack_Serialize();
         _messagePackSerializer = new MessagePack.Serialization();
         _messagePackSerializerBytes = MessagePack_Serialize();
         _utf8jsonSerializer = new Utf8Json.TextSerialization();
@@ -33,6 +37,9 @@ public class SerializeBenchmark
 
     [Benchmark]
     public byte[] Json_Serialize() => _jsonSerializer.Serialize(_person);
+
+    [Benchmark]
+    public byte[] MemoryPack_Serialize() => _messagePackSerializer.Serialize(_person);
 
     [Benchmark]
     public byte[] MessagePack_Serialize() => _messagePackSerializer.Serialize(_person);
@@ -44,6 +51,9 @@ public class SerializeBenchmark
     public Person? Json_Deserialize() => _jsonSerializer.Deserialize<Person>(_jsonSerializerBytes);
 
     [Benchmark]
+    public Person? MemoryPack_Deserialize() => _memoryPackSerializer.Deserialize<Person>(_memoryPackSerializerBytes);
+
+    [Benchmark]
     public Person? MessagePack_Deserialize() => _messagePackSerializer.Deserialize<Person>(_messagePackSerializerBytes);
 
     [Benchmark]
@@ -51,6 +61,9 @@ public class SerializeBenchmark
 
     [Benchmark]
     public Person Json() => SerializeDeserialize(_jsonSerializer);
+
+    [Benchmark]
+    public Person MemoryPack() => SerializeDeserialize(_memoryPackSerializer);
 
     [Benchmark]
     public Person MessagePack() => SerializeDeserialize(_messagePackSerializer);
@@ -62,7 +75,7 @@ public class SerializeBenchmark
     {
         var bytes = serializer.Serialize(_person);
         var person = serializer.Deserialize<Person>(bytes);
-        //if (!_person.Equals(person)) throw new InvalidOperationException();
+        if (!_person.Equals(person)) throw new InvalidOperationException();
         return person!;
     }
 }
