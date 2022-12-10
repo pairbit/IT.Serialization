@@ -56,6 +56,12 @@ jobs:
             PROJECT_FILE_PATH: IT.Serialization.MemoryPack/IT.Serialization.MemoryPack.csproj
             NUGET_KEY: ${{secrets.NUGET}}
           
+      - name: Publish IT.Serialization.MessagePack
+        uses: pairbit/publish-nuget@v2.6.0
+        with:
+            PROJECT_FILE_PATH: IT.Serialization.MessagePack/IT.Serialization.MessagePack.csproj
+            NUGET_KEY: ${{secrets.NUGET}}
+          
       - name: Publish IT.Serialization.Utf8Json
         uses: pairbit/publish-nuget@v2.6.0
         with:
