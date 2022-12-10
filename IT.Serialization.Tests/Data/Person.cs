@@ -2,7 +2,7 @@
 
 namespace IT.Serialization.Tests.Data;
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
 [global::MemoryPack.MemoryPackable(global::MemoryPack.GenerateType.Collection)]
 #endif
 public partial class MyList<T> : List<T>, IEquatable<MyList<T>>
@@ -15,7 +15,7 @@ public partial class MyList<T> : List<T>, IEquatable<MyList<T>>
     {
     }
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
     [global::MemoryPack.MemoryPackConstructor]
 #endif
     public MyList(IEnumerable<T> collection) : base(collection)
@@ -36,7 +36,7 @@ public partial class MyList<T> : List<T>, IEquatable<MyList<T>>
     }
 }
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
 [global::MemoryPack.MemoryPackable]
 #endif
 [DataContract]

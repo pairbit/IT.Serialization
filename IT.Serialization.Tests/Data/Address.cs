@@ -2,7 +2,7 @@
 
 namespace IT.Serialization.Tests.Data;
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
 [global::MemoryPack.MemoryPackable]
 #endif
 [DataContract]

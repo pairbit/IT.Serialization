@@ -22,7 +22,7 @@ public class CustomTest
 
             city.Name = span[..sep].TrimEnd().ToString();
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
             city.Count = Int32.Parse(span[(sep + 1)..].TrimStart());
 #else
             city.Count = Int32.Parse(span[(sep + 1)..].TrimStart().ToString());
