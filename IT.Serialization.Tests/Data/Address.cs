@@ -1,9 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿using MemoryPack;
+using System.Runtime.Serialization;
 
 namespace IT.Serialization.Tests.Data;
 
+[MemoryPackable]
 [DataContract]
-public record Address
+public partial record Address
 {
     [DataMember(Order = 0)]
     public short Number { get; set; }

@@ -23,19 +23,19 @@ public abstract class SerializerTest
     [Test]
     public void SerializerGeneric()
     {
-        var serialized = _serializer.Serialize(_person);
+        var serialized = _serializer.Serialize(in _person);
         var serialized2 = _serializerPerson.Serialize(_person);
 
         Dump(_person, serialized);
 
-        Assert.NotNull(serialized);
-        Assert.Greater(serialized.Length, 0);
+        Assert.That(serialized, Is.Not.Null);
+        Assert.That(serialized, Is.Not.Empty);
         Assert.That(serialized, Is.EqualTo(serialized2));
 
         var person = _serializer.Deserialize<Person>(serialized);
         var person2 = _serializerPerson.Deserialize(serialized2);
 
-        Assert.NotNull(person);
+        Assert.That(person, Is.Not.Null);
         Assert.That(person, Is.EqualTo(person2));
         Assert.That(person, Is.EqualTo(_person));
 
@@ -71,14 +71,16 @@ public abstract class SerializerTest
 
         Dump(_personObject, serialized);
 
-        Assert.NotNull(serialized);
-        Assert.Greater(serialized.Length, 0);
+        Assert.That(serialized, Is.Not.Null);
+        Assert.That(serialized, Is.Not.Empty);
 
         var person = _serializer.Deserialize(typeof(Person), serialized);
 
-        Assert.NotNull(person);
-
-        Assert.True(_personObject.Equals(person));
+        Assert.Multiple(() =>
+        {
+            Assert.That(person, Is.Not.Null);
+            Assert.That(_personObject, Is.EqualTo(person));
+        });
 
         var path = @"C:\var\SerializerTest_NonGeneric.log";
 
@@ -92,6 +94,6 @@ public abstract class SerializerTest
         person = _serializer.Deserialize<Person>(reader);
         reader.Close();
 
-        Assert.True(_person.Equals(person));
+        Assert.That(_person, Is.EqualTo(person));
     }
 }

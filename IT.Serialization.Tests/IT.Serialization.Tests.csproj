@@ -10,6 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="IT.Generation.KGySoft" Version="2.0.0-pre1" />
+    <PackageReference Include="MemoryPack.Generator" Version="1.9.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
@@ -19,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IT.Serialization.Json\IT.Serialization.Json.csproj" />
+    <ProjectReference Include="..\IT.Serialization.MemoryPack\IT.Serialization.MemoryPack.csproj" />
     <ProjectReference Include="..\IT.Serialization.MessagePack\IT.Serialization.MessagePack.csproj" />
     <ProjectReference Include="..\IT.Serialization.Utf8Json\IT.Serialization.Utf8Json.csproj" />
   </ItemGroup>

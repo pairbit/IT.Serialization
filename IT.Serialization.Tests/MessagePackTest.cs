@@ -6,7 +6,7 @@ namespace IT.Serialization.Tests;
 public class MessagePackTest : SerializerTest
 {
     //private static JsonSerializerOptions _options = new ();
-    private static MessagePack.Serialization _serializer = new();
+    private static readonly MessagePack.Serialization _serializer = new();
 
     public MessagePackTest() : base(_serializer) { }
 

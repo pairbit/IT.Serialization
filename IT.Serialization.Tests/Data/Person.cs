@@ -1,8 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using MemoryPack;
+using System.Runtime.Serialization;
 
 namespace IT.Serialization.Tests.Data;
 
-public class MyList<T> : List<T>, IEquatable<MyList<T>>
+[MemoryPackable(GenerateType.Collection)]
+public partial class MyList<T> : List<T>, IEquatable<MyList<T>>
 {
     public MyList()
     {
@@ -12,6 +14,7 @@ public class MyList<T> : List<T>, IEquatable<MyList<T>>
     {
     }
 
+    [MemoryPackConstructor]
     public MyList(IEnumerable<T> collection) : base(collection)
     {
     }
@@ -30,8 +33,9 @@ public class MyList<T> : List<T>, IEquatable<MyList<T>>
     }
 }
 
+[MemoryPackable]
 [DataContract]
-public record Person
+public partial record Person
 {
     [DataMember(Order = 0)]
     public int Id { get; set; }

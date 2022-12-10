@@ -8,7 +8,7 @@ public class CustomTest
     protected static readonly IGenerator _generator = new Generation.KGySoft.Generator();
     protected static readonly City _city = _generator.Generate<City>();
 
-    private static ITextSerialization<City> _serializer = new CitySerializer();
+    private static readonly ITextSerialization<City> _serializer = new CitySerializer();
 
     class CitySerializer : TextSerialization<City>
     {
@@ -38,28 +38,28 @@ public class CustomTest
     {
         var serialized = _serializer.Serialize(_city);
 
-        Assert.NotNull(serialized);
-        Assert.Greater(serialized.Length, 0);
+        Assert.That(serialized, Is.Not.Null);
+        Assert.That(serialized, Is.Not.Empty);
 
         var city = _serializer.Deserialize(serialized);
 
-        Assert.NotNull(city);
+        Assert.That(city, Is.Not.Null);
 
-        Assert.True(_city.Equals(city));
+        Assert.That(city, Is.EqualTo(_city));
 
         var text = _serializer.SerializeToText(_city);
         var chars = text.ToCharArray();
 
-        Assert.NotNull(text);
-        Assert.Greater(text.Length, 0);
+        Assert.That(text, Is.Not.Null);
+        Assert.That(text, Is.Not.Empty);
 
         city = _serializer.Deserialize(text);
 
-        Assert.True(_city.Equals(city));
+        Assert.That(city, Is.EqualTo(_city));
 
         city = _serializer.Deserialize(chars);
 
-        Assert.True(_city.Equals(city));
+        Assert.That(city, Is.EqualTo(_city));
 
         var path = @"C:\var\CustomTest.log";
 
@@ -74,6 +74,6 @@ public class CustomTest
         city = _serializer.Deserialize(reader);
         reader.Close();
 
-        Assert.True(_city.Equals(city));
+        Assert.That(city, Is.EqualTo(_city));
     }
 }
