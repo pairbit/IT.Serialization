@@ -71,7 +71,7 @@ public class SerializeBenchmark
 #if NETCOREAPP3_1_OR_GREATER
 
     [Benchmark]
-    public byte[] MemoryPack_Serialize() => _messagePackSerializer.Serialize(_person);
+    public byte[] MemoryPack_Serialize() => _memoryPackSerializer.Serialize(_person);
 
     [Benchmark]
     public Person? MemoryPack_Deserialize() => _memoryPackSerializer.Deserialize<Person>(_memoryPackSerializerBytes);
