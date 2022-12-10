@@ -21,8 +21,12 @@ public class CustomTest
             if (city == null) city = new City();
 
             city.Name = span[..sep].TrimEnd().ToString();
-            city.Count = Int32.Parse(span[(sep + 1)..].TrimStart());
 
+#if NET6_0_OR_GREATER
+            city.Count = Int32.Parse(span[(sep + 1)..].TrimStart());
+#else
+            city.Count = Int32.Parse(span[(sep + 1)..].TrimStart().ToString());
+#endif
             return span.Length;
         }
 

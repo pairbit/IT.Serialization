@@ -1,9 +1,10 @@
-﻿using MemoryPack;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace IT.Serialization.Tests.Data;
 
-[MemoryPackable]
+#if NET6_0_OR_GREATER
+[global::MemoryPack.MemoryPackable]
+#endif
 [DataContract]
 public partial record City
 {
@@ -13,5 +14,3 @@ public partial record City
     [DataMember(Order = 1)]
     public int Count { get; set; }
 }
-
-//public class

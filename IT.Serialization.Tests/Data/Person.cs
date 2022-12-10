@@ -1,9 +1,10 @@
-﻿using MemoryPack;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace IT.Serialization.Tests.Data;
 
-[MemoryPackable(GenerateType.Collection)]
+#if NET6_0_OR_GREATER
+[global::MemoryPack.MemoryPackable(global::MemoryPack.GenerateType.Collection)]
+#endif
 public partial class MyList<T> : List<T>, IEquatable<MyList<T>>
 {
     public MyList()
@@ -14,7 +15,9 @@ public partial class MyList<T> : List<T>, IEquatable<MyList<T>>
     {
     }
 
-    [MemoryPackConstructor]
+#if NET6_0_OR_GREATER
+    [global::MemoryPack.MemoryPackConstructor]
+#endif
     public MyList(IEnumerable<T> collection) : base(collection)
     {
     }
@@ -33,7 +36,9 @@ public partial class MyList<T> : List<T>, IEquatable<MyList<T>>
     }
 }
 
-[MemoryPackable]
+#if NET6_0_OR_GREATER
+[global::MemoryPack.MemoryPackable]
+#endif
 [DataContract]
 public partial record Person
 {

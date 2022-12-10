@@ -14,6 +14,17 @@ public static class xITextDeserializer
         return value;
     }
 
+#if NETSTANDARD2_0
+
+    public static T? Deserialize<T>(this ITextDeserializer<T> textDeserializer, String str)
+    {
+        T? value = default;
+        textDeserializer.Deserialize(str.AsSpan(), ref value);
+        return value;
+    }
+
+#endif
+
     public static T? Deserialize<T>(this ITextDeserializer<T> textDeserializer, ReadOnlyMemory<Char> memory)
     {
         T? value = default;
@@ -48,6 +59,17 @@ public static class xITextDeserializer
         return value;
     }
 
+#if NETSTANDARD2_0
+
+    public static T? Deserialize<T>(this ITextDeserializer textDeserializer, String str)
+    {
+        T? value = default;
+        textDeserializer.Deserialize(str.AsSpan(), ref value);
+        return value;
+    }
+
+#endif
+
     public static T? Deserialize<T>(this ITextDeserializer textDeserializer, ReadOnlyMemory<Char> memory)
     {
         T? value = default;
@@ -79,6 +101,17 @@ public static class xITextDeserializer
         textDeserializer.Deserialize(type, span, ref value);
         return value;
     }
+
+#if NETSTANDARD2_0
+
+    public static Object? Deserialize(this ITextDeserializer textDeserializer, Type type, String str)
+    {
+        Object? value = default;
+        textDeserializer.Deserialize(type, str.AsSpan(), ref value);
+        return value;
+    }
+
+#endif
 
     public static Object? Deserialize(this ITextDeserializer textDeserializer, Type type, ReadOnlyMemory<Char> memory)
     {

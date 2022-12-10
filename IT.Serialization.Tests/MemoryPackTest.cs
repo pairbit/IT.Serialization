@@ -1,3 +1,5 @@
+#if NET6_0_OR_GREATER
+
 namespace IT.Serialization.Tests;
 
 public class MemoryPackTest : SerializerTest
@@ -6,3 +8,5 @@ public class MemoryPackTest : SerializerTest
 
     public MemoryPackTest() : base(_serializer) { }
 }
+
+#endif
