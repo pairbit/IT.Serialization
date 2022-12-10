@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+	<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
 	<LangVersion>latest</LangVersion>
 	<Nullable>enable</Nullable>
 	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -9,12 +9,12 @@
 	<Company />
 	<Description>Implementation of binary serialization via MessagePack</Description>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<RepositoryUrl>https://github.com/pairbit/IT</RepositoryUrl>
+	<RepositoryUrl>https://github.com/pairbit/IT.Serialization</RepositoryUrl>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<Authors>Ivan Tikhonov</Authors>
 	<Copyright>Ivan Tikhonov © 2022</Copyright>
-	<Version>2.0.1</Version>
-	<PackageTags>Serialization Serializer</PackageTags>
+	<Version>2.0.3-pre1</Version>
+	<PackageTags>Serialization Serializer MessagePack</PackageTags>
 	<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	<PackageIcon>Icon.png</PackageIcon>
 	<PackageReleaseNotes>
@@ -35,7 +35,7 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <PackageReference Include="MessagePack" Version="2.4.35" />
+    <PackageReference Include="MessagePack" Version="2.4.59" />
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 

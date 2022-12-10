@@ -37,7 +37,7 @@ public record Person
     public int Id { get; set; }
 
     [DataMember(Order = 1)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [DataMember(Order = 2)]
     public int Age { get; set; }
@@ -49,14 +49,14 @@ public record Person
     public DateTime Created { get; set; }
 
     [DataMember(Order = 5)]
-    public Person Mother { get; set; }
+    public Person? Mother { get; set; }
 
     [DataMember(Order = 6)]
-    public Person Father { get; set; }
+    public Person? Father { get; set; }
 
     [DataMember(Order = 7)]
-    public MyList<Address> Addresses { get; set; }
+    public MyList<Address>? Addresses { get; set; }
 
     [DataMember(Order = 8)]
-    public MyList<Person> Childs { get; set; }
+    public MyList<Person>? Childs { get; set; }
 }

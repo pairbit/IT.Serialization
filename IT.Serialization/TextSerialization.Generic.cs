@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.Text;
-using System.Threading;
 
 namespace IT.Serialization;
 
@@ -16,26 +15,26 @@ public abstract class TextSerialization<T> : Serialization<T>, ITextSerializatio
 
     #region ISerializer
 
-    public override Byte[] Serialize(T value, CancellationToken cancellationToken)
-        => _encoding.GetBytes(SerializeToText(value, cancellationToken));
+    public override Byte[] Serialize(in T? value)
+        => _encoding.GetBytes(SerializeToText(in value));
 
-    public override T? Deserialize(ReadOnlyMemory<Byte> memory, CancellationToken cancellationToken)
+    public override Int32 Deserialize(ReadOnlySpan<Byte> span, ref T? value)
     {
-        var span = memory.Span;
-
         var len = _encoding.GetCharCount(span);
 
         var pool = ArrayPool<Char>.Shared;
 
         var rented = pool.Rent(len);
 
-        var rentedMemory = rented.AsMemory(0, len);
+        var rentedSpan = rented.AsSpan(0, len);
 
         try
         {
-            _encoding.GetChars(span, rentedMemory.Span);
+            _encoding.GetChars(span, rentedSpan);
 
-            return Deserialize(rentedMemory, cancellationToken);
+            Deserialize(rentedSpan, ref value);
+
+            return span.Length;
         }
         finally
         {
@@ -43,23 +42,44 @@ public abstract class TextSerialization<T> : Serialization<T>, ITextSerializatio
         }
     }
 
+    public override Int32 Deserialize(ReadOnlyMemory<Byte> memory, ref T? value) => Deserialize(memory.Span, ref value);
+
     #endregion ISerializer
 
     #region ITextSerializer
 
-    //public virtual void Serialize(IBufferWriter<Char> writer, T value, CancellationToken cancellationToken)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    public virtual void SerializeToText<TBufferWriter>(in T? value, in TBufferWriter writer)
+#if NET7_0_OR_GREATER
+         where TBufferWriter : IBufferWriter<char>
+#else
+         where TBufferWriter : class, IBufferWriter<char>
+#endif
+        => writer.Write(SerializeToText(in value).AsSpan());
 
-    public abstract String SerializeToText(T value, CancellationToken cancellationToken);
+    public abstract String SerializeToText(in T? value);
 
-    public abstract T? Deserialize(ReadOnlyMemory<Char> memory, CancellationToken cancellationToken);
+    public abstract Int32 Deserialize(ReadOnlySpan<Char> span, ref T? value);
 
-    //public virtual T? Deserialize(in ReadOnlySequence<Char> sequence, CancellationToken cancellationToken)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    public virtual Int32 Deserialize(ReadOnlyMemory<Char> memory, ref T? value)
+        => Deserialize(memory.Span, ref value);
+
+    public virtual Int32 Deserialize(in ReadOnlySequence<Char> sequence, ref T? value)
+    {
+        if (sequence.IsSingleSegment)
+        {
+#if NETSTANDARD2_0
+            return Deserialize(sequence.First.Span, ref value);
+#else
+            return Deserialize(sequence.FirstSpan, ref value);
+#endif
+        }
+
+        Span<Char> span = stackalloc char[(int)sequence.Length];
+
+        sequence.CopyTo(span);
+
+        return Deserialize(span, ref value);
+    }
 
     #endregion ITextSerializer
 }

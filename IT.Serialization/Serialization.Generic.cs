@@ -10,10 +10,15 @@ public abstract class Serialization<T> : ISerialization<T>
 {
     #region IAsyncSerializer
 
-    public virtual Task SerializeAsync(Stream stream, T value, CancellationToken cancellationToken = default)
+    public virtual ValueTask SerializeAsync(T? value, Stream stream, CancellationToken cancellationToken = default)
     {
-        var bytes = Serialize(value, cancellationToken);
-        return stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
+        var bytes = Serialize(value);
+
+#if NETSTANDARD2_0
+        return new(stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken));
+#else
+        return stream.WriteAsync(bytes, cancellationToken);
+#endif
     }
 
     public virtual async ValueTask<T?> DeserializeAsync(Stream stream, CancellationToken cancellationToken = default)
@@ -27,7 +32,11 @@ public abstract class Serialization<T> : ISerialization<T>
 
             if ((uint)readed > (uint)len) throw new IOException("IO_StreamTooLong");
 
-            return Deserialize(rented.AsMemory(0, len), cancellationToken);
+            T? value = default;
+
+            Deserialize(rented.AsSpan(0, len), ref value);
+
+            return value;
         }
         finally
         {
@@ -39,26 +48,23 @@ public abstract class Serialization<T> : ISerialization<T>
 
     #region ISerializer
 
-    public virtual void Serialize(IBufferWriter<Byte> writer, T value, CancellationToken cancellationToken = default)
-        => writer.Write(Serialize(value, cancellationToken));
-
-    public virtual void Serialize(Stream stream, T value, CancellationToken cancellationToken = default)
+    public virtual void Serialize(in T? value, Stream stream, CancellationToken cancellationToken = default)
     {
-        var bytes = Serialize(value, cancellationToken);
+        var bytes = Serialize(value);
         stream.Write(bytes, 0, bytes.Length);
     }
 
-    public abstract Byte[] Serialize(T value, CancellationToken cancellationToken = default);
+    public virtual void Serialize<TBufferWriter>(in T? value, in TBufferWriter writer)
+#if NET7_0_OR_GREATER
+         where TBufferWriter : IBufferWriter<byte>
+#else
+         where TBufferWriter : class, IBufferWriter<byte>
+#endif
+        => writer.Write(Serialize(in value));
 
-    public abstract T? Deserialize(ReadOnlyMemory<Byte> memory, CancellationToken cancellationToken = default);
+    public abstract Byte[] Serialize(in T? value);
 
-    public virtual T? Deserialize(in ReadOnlySequence<Byte> sequence, CancellationToken cancellationToken = default)
-    {
-        if (!sequence.IsSingleSegment) throw new NotImplementedException();
-        return Deserialize(sequence.First, cancellationToken);
-    }
-
-    public virtual T? Deserialize(Stream stream, CancellationToken cancellationToken = default)
+    public virtual Int32 Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default)
     {
         var len = checked((Int32)stream.Length);
 
@@ -71,7 +77,7 @@ public abstract class Serialization<T> : ISerialization<T>
 
             if ((uint)readed > (uint)len) throw new IOException("IO_StreamTooLong");
 
-            return Deserialize(rented.AsMemory(0, len), cancellationToken);
+            return Deserialize(rented.AsSpan(0, len), ref value);
         }
         finally
         {
@@ -79,5 +85,27 @@ public abstract class Serialization<T> : ISerialization<T>
         }
     }
 
-    #endregion ISerializer
+    public abstract Int32 Deserialize(ReadOnlySpan<Byte> span, ref T? value);
+
+    public virtual Int32 Deserialize(ReadOnlyMemory<Byte> memory, ref T? value) => Deserialize(memory.Span, ref value);
+
+    public virtual Int32 Deserialize(in ReadOnlySequence<Byte> sequence, ref T? value)
+    {
+        if (sequence.IsSingleSegment)
+        {
+#if NETSTANDARD2_0
+            return Deserialize(sequence.First.Span, ref value);
+#else
+            return Deserialize(sequence.FirstSpan, ref value);
+#endif
+        }
+
+        Span<Byte> span = stackalloc Byte[(Int32)sequence.Length];
+
+        sequence.CopyTo(span);
+
+        return Deserialize(span, ref value);
+    }
+
+#endregion ISerializer
 }

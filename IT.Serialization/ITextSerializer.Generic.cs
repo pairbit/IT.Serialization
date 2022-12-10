@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Buffers;
-using System.Threading;
 
 namespace IT.Serialization;
 
 public interface ITextSerializer<T> : ISerializer<T>
 {
-    //void Serialize(IBufferWriter<Char> writer, T value, CancellationToken cancellationToken = default);
+    void SerializeToText<TBufferWriter>(in T? value, in TBufferWriter writer)
+#if NET7_0_OR_GREATER
+         where TBufferWriter : IBufferWriter<char>;
+#else
+         where TBufferWriter : class, IBufferWriter<char>;
+#endif
 
-    String SerializeToText(T value, CancellationToken cancellationToken = default);
+    String SerializeToText(in T? value);
 }

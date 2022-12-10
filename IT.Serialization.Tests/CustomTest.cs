@@ -12,23 +12,23 @@ public class CustomTest
 
     class CitySerializer : TextSerialization<City>
     {
-        public override City? Deserialize(ReadOnlyMemory<char> memory, CancellationToken cancellationToken)
+        public override Int32 Deserialize(ReadOnlySpan<char> span, ref City? city)
         {
-            var span = memory.Span;
-
             var sep = span.IndexOf('|');
 
             if (sep == -1) throw new FormatException();
 
-            return new City
-            {
-                Name = span[..sep].TrimEnd().ToString(),
-                Count = Int32.Parse(span[(sep + 1)..].TrimStart())
-            };
+            if (city == null) city = new City();
+
+            city.Name = span[..sep].TrimEnd().ToString();
+            city.Count = Int32.Parse(span[(sep + 1)..].TrimStart());
+
+            return span.Length;
         }
 
-        public override string SerializeToText(City value, CancellationToken cancellationToken)
+        public override String SerializeToText(in City? value)
         {
+            if (value == null) return string.Empty;
             return $"{value.Name} | {value.Count}";
         }
     }
@@ -48,13 +48,16 @@ public class CustomTest
         Assert.True(_city.Equals(city));
 
         var text = _serializer.SerializeToText(_city);
+        var chars = text.ToCharArray();
 
         Assert.NotNull(text);
         Assert.Greater(text.Length, 0);
 
-        city = _serializer.Deserialize(text.AsMemory());
+        city = _serializer.Deserialize(text);
 
-        Assert.NotNull(city);
+        Assert.True(_city.Equals(city));
+
+        city = _serializer.Deserialize(chars);
 
         Assert.True(_city.Equals(city));
 
@@ -63,7 +66,7 @@ public class CustomTest
         File.Delete(path);
 
         using var file = File.OpenWrite(path);
-        _serializer.Serialize(file, _city);
+        _serializer.Serialize(_city, file);
         file.Close();
 
 

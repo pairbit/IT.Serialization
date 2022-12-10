@@ -24,14 +24,14 @@ Interfaces of serialization
     private void SerializeToTextDeserialize(ITextSerializer serializer, Person person)
     {
         var serialized = serializer.SerializeToText(person);
-        var person2 = serializer.Deserialize<Person>(serialized.AsMemory());
+        var person2 = serializer.Deserialize<Person>(serialized);
         if (!person.Equals(person2)) throw new InvalidOperationException();
     }
 
     private void SerializeToTextDeserialize(ITextSerializer<Person> serializer, Person person)
     {
         var serialized = serializer.SerializeToText(person);
-        var person2 = serializer.Deserialize(serialized.AsMemory());
+        var person2 = serializer.Deserialize(serialized);
         if (!person.Equals(person2)) throw new InvalidOperationException();
     }
 ```

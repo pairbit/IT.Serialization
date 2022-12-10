@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Buffers;
-using System.Threading;
 
 namespace IT.Serialization;
 
 public interface ITextDeserializer<T> : IDeserializer<T>
 {
-    T? Deserialize(ReadOnlyMemory<Char> memory, CancellationToken cancellationToken = default);
+    Int32 Deserialize(ReadOnlySpan<Char> span, ref T? value);
 
-    //T? Deserialize(in ReadOnlySequence<Char> sequence, CancellationToken cancellationToken = default);
+    Int32 Deserialize(ReadOnlyMemory<Char> memory, ref T? value);
+
+    Int32 Deserialize(in ReadOnlySequence<Char> sequence, ref T? value);
 }

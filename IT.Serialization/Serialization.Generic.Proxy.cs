@@ -17,8 +17,8 @@ public class SerializationProxy<T> : ISerialization<T>
 
     #region IAsyncSerializer
 
-    public Task SerializeAsync(Stream stream, T value, CancellationToken cancellationToken = default)
-        => _serialization.SerializeAsync(stream, value, cancellationToken);
+    public ValueTask SerializeAsync(T? value, Stream stream, CancellationToken cancellationToken = default)
+        => _serialization.SerializeAsync(value, stream, cancellationToken);
 
     public ValueTask<T?> DeserializeAsync(Stream stream, CancellationToken cancellationToken = default)
         => _serialization.DeserializeAsync<T>(stream, cancellationToken);
@@ -27,23 +27,31 @@ public class SerializationProxy<T> : ISerialization<T>
 
     #region ISerializer
 
-    public void Serialize(IBufferWriter<Byte> writer, T value, CancellationToken cancellationToken = default)
-        => _serialization.Serialize(writer, value, cancellationToken);
+    public void Serialize(in T? value, Stream stream, CancellationToken cancellationToken = default)
+        => _serialization.Serialize(value, stream, cancellationToken);
 
-    public void Serialize(Stream stream, T value, CancellationToken cancellationToken = default)
-        => _serialization.Serialize(stream, value, cancellationToken);
+    public void Serialize<TBufferWriter>(in T? value, in TBufferWriter writer)
+#if NET7_0_OR_GREATER
+         where TBufferWriter : IBufferWriter<byte>
+#else
+         where TBufferWriter : class, IBufferWriter<byte>
+#endif
+        => _serialization.Serialize(in value, in writer);
 
-    public Byte[] Serialize(T value, CancellationToken cancellationToken = default)
-         => _serialization.Serialize(value, cancellationToken);
+    public Byte[] Serialize(in T? value)
+         => _serialization.Serialize(in value);
 
-    public T? Deserialize(ReadOnlyMemory<Byte> memory, CancellationToken cancellationToken = default)
-        => _serialization.Deserialize<T>(memory, cancellationToken);
+    public Int32 Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default)
+        => _serialization.Deserialize(stream, ref value, cancellationToken);
 
-    public T? Deserialize(in ReadOnlySequence<Byte> sequence, CancellationToken cancellationToken = default)
-        => _serialization.Deserialize<T>(sequence, cancellationToken);
+    public Int32 Deserialize(ReadOnlySpan<Byte> span, ref T? value)
+        => _serialization.Deserialize(span, ref value);
 
-    public T? Deserialize(Stream stream, CancellationToken cancellationToken = default)
-        => _serialization.Deserialize<T>(stream, cancellationToken);
+    public Int32 Deserialize(ReadOnlyMemory<Byte> memory, ref T? value)
+        => _serialization.Deserialize(memory, ref value);
+
+    public Int32 Deserialize(in ReadOnlySequence<Byte> sequence, ref T? value)
+        => _serialization.Deserialize(in sequence, ref value);
 
     #endregion ISerializer
 }

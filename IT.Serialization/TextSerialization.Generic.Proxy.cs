@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Buffers;
 
 namespace IT.Serialization;
 
@@ -14,21 +14,25 @@ public class TextSerializationProxy<T> : SerializationProxy<T>, ITextSerializati
 
     #region ITextSerialization
 
-    //public virtual void Serialize(IBufferWriter<Char> writer, T value, CancellationToken cancellationToken)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    public virtual void SerializeToText<TBufferWriter>(in T? value, in TBufferWriter writer)
+#if NET7_0_OR_GREATER
+         where TBufferWriter : IBufferWriter<char>
+#else
+         where TBufferWriter : class, IBufferWriter<char>
+#endif
+        => _textSerialization.SerializeToText(in value, in writer);
 
-    public String SerializeToText(T value, CancellationToken cancellationToken)
-        => _textSerialization.SerializeToText(value, cancellationToken);
+    public String SerializeToText(in T? value)
+        => _textSerialization.SerializeToText(in value);
 
-    public T? Deserialize(ReadOnlyMemory<Char> memory, CancellationToken cancellationToken)
-        => _textSerialization.Deserialize<T>(memory, cancellationToken);
+    public Int32 Deserialize(ReadOnlySpan<Char> span, ref T? value)
+        => _textSerialization.Deserialize(span, ref value);
 
-    //public virtual T? Deserialize(in ReadOnlySequence<Char> sequence, CancellationToken cancellationToken)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    public Int32 Deserialize(ReadOnlyMemory<Char> memory, ref T? value)
+        => _textSerialization.Deserialize(memory, ref value);
+
+    public Int32 Deserialize(in ReadOnlySequence<Char> sequence, ref T? value)
+        => _textSerialization.Deserialize(in sequence, ref value);
 
     #endregion ITextSerialization
 }

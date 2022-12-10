@@ -45,11 +45,11 @@ public abstract class SerializerTest
         File.Delete(path);
         File.Delete(path2);
         using var file = File.OpenWrite(path);
-        _serializer.Serialize(file, _person);
+        _serializer.Serialize(_person, file);
         file.Close();
 
         using var file2 = File.OpenWrite(path2);
-        _serializerPerson.Serialize(file2, _person);
+        _serializerPerson.Serialize(_person, file2);
         file2.Close();
 
         using var reader = File.OpenRead(path);
@@ -85,7 +85,7 @@ public abstract class SerializerTest
         File.Delete(path);
 
         using var file = File.OpenWrite(path);
-        _serializer.Serialize(file, _person);
+        _serializer.Serialize(_person, file);
         file.Close();
 
         using var reader = File.OpenRead(path);

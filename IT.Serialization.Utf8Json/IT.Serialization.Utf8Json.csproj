@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+	<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
 	<LangVersion>latest</LangVersion>
 	<Nullable>enable</Nullable>
 	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<Company />
-	<Description>Implementation of json serialization via Utf8Json from Cryptisk</Description>
+	<Description>Implementation of json serialization via Utf8Json</Description>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<RepositoryUrl>https://github.com/pairbit/IT</RepositoryUrl>
+	<RepositoryUrl>https://github.com/pairbit/IT.Serialization</RepositoryUrl>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<Authors>Ivan Tikhonov</Authors>
 	<Copyright>Ivan Tikhonov © 2022</Copyright>
-	<Version>2.0.1</Version>
-	<PackageTags>Serialization Serializer Json</PackageTags>
+	<Version>2.0.3-pre1</Version>
+	<PackageTags>Serialization Serializer Json Utf8Json</PackageTags>
 	<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	<PackageIcon>Icon.png</PackageIcon>
 	<PackageReleaseNotes>

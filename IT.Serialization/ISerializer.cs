@@ -9,21 +9,31 @@ public interface ISerializer : IAsyncSerializer
 {
     #region Generic
 
-    void Serialize<T>(IBufferWriter<Byte> writer, T value, CancellationToken cancellationToken = default);
+    void Serialize<T>(in T? value, Stream stream, CancellationToken cancellationToken = default);
 
-    void Serialize<T>(Stream stream, T value, CancellationToken cancellationToken = default);
+    void Serialize<T, TBufferWriter>(in T? value, in TBufferWriter writer)
+#if NET7_0_OR_GREATER
+         where TBufferWriter : IBufferWriter<byte>;
+#else
+         where TBufferWriter : class, IBufferWriter<byte>;
+#endif
 
-    Byte[] Serialize<T>(T value, CancellationToken cancellationToken = default);
+    Byte[] Serialize<T>(in T? value);
 
     #endregion Generic
 
     #region NonGeneric
 
-    void Serialize(Type type, IBufferWriter<Byte> writer, Object value, CancellationToken cancellationToken = default);
+    void Serialize(Type type, Object? value, Stream stream, CancellationToken cancellationToken = default);
 
-    void Serialize(Type type, Stream stream, Object value, CancellationToken cancellationToken = default);
+    void Serialize<TBufferWriter>(Type type, Object? value, in TBufferWriter writer)
+#if NET7_0_OR_GREATER
+         where TBufferWriter : IBufferWriter<byte>;
+#else
+         where TBufferWriter : class, IBufferWriter<byte>;
+#endif
 
-    Byte[] Serialize(Type type, Object value, CancellationToken cancellationToken = default);
+    Byte[] Serialize(Type type, Object? value);
 
     #endregion NonGeneric
 }

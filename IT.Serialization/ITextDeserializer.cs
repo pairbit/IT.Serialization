@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Threading;
 
 namespace IT.Serialization;
 
@@ -8,17 +7,21 @@ public interface ITextDeserializer : IDeserializer
 {
     #region Generic
 
-    T? Deserialize<T>(ReadOnlyMemory<Char> memory, CancellationToken cancellationToken = default);
+    Int32 Deserialize<T>(ReadOnlySpan<Char> span, ref T? value);
 
-    //T? Deserialize<T>(in ReadOnlySequence<Char> sequence, CancellationToken cancellationToken = default);
+    Int32 Deserialize<T>(ReadOnlyMemory<Char> memory, ref T? value);
+
+    Int32 Deserialize<T>(in ReadOnlySequence<Char> sequence, ref T? value);
 
     #endregion Generic
 
     #region NonGeneric
 
-    Object? Deserialize(Type type, ReadOnlyMemory<Char> memory, CancellationToken cancellationToken = default);
+    Int32 Deserialize(Type type, ReadOnlySpan<Char> span, ref Object? value);
 
-    //Object? Deserialize(Type type, ReadOnlySequence<Char> sequence, CancellationToken cancellationToken = default);
+    Int32 Deserialize(Type type, ReadOnlyMemory<Char> memory, ref Object? value);
+
+    Int32 Deserialize(Type type, in ReadOnlySequence<Char> sequence, ref Object? value);
 
     #endregion NonGeneric
 }

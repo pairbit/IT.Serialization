@@ -6,7 +6,7 @@ namespace IT.Serialization.Benchmarks.Data;
 public record City
 {
     [DataMember(Order = 0)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [DataMember(Order = 1)]
     public int Count { get; set; }

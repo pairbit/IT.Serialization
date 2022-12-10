@@ -7,9 +7,11 @@ namespace IT.Serialization;
 
 public interface IDeserializer<T> : IAsyncDeserializer<T>
 {
-    T? Deserialize(ReadOnlyMemory<Byte> memory, CancellationToken cancellationToken = default);
+    Int32 Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default);
 
-    T? Deserialize(in ReadOnlySequence<Byte> sequence, CancellationToken cancellationToken = default);
+    Int32 Deserialize(ReadOnlySpan<Byte> span, ref T? value);
 
-    T? Deserialize(Stream stream, CancellationToken cancellationToken = default);
+    Int32 Deserialize(ReadOnlyMemory<Byte> memory, ref T? value);
+
+    Int32 Deserialize(in ReadOnlySequence<Byte> sequence, ref T? value);
 }
