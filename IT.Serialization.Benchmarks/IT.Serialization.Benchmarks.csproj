@@ -20,6 +20,8 @@
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
+	<PackageReference Include="BinaryPack" Version="1.0.3" />
+	<PackageReference Include="HyperSerializer" Version="1.0.13" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework) == 'net462'">

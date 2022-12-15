@@ -22,8 +22,13 @@ public class SerializeBenchmark
     private readonly byte[] _utf8jsonSerializerBytes;
 
 #if NETCOREAPP3_1_OR_GREATER
+
     private readonly ISerialization _memoryPackSerializer;
     private readonly byte[] _memoryPackSerializerBytes;
+
+    //private readonly byte[] _hyperSerializerBytes;
+    //private readonly byte[] _binaryPackBytes;
+
 #endif
 
     public SerializeBenchmark()
@@ -38,6 +43,9 @@ public class SerializeBenchmark
 #if NETCOREAPP3_1_OR_GREATER
         _memoryPackSerializer = new MemoryPack.Serialization();
         _memoryPackSerializerBytes = MemoryPack_Serialize();
+
+        //_hyperSerializerBytes = HyperSerializer_Serialize().ToArray();
+        //_binaryPackBytes = BinaryPack_Serialize();
 #endif
     }
 
@@ -71,13 +79,31 @@ public class SerializeBenchmark
 #if NETCOREAPP3_1_OR_GREATER
 
     [Benchmark]
-    public byte[] MemoryPack_Serialize() => _memoryPackSerializer.Serialize(_person);
+    public byte[] MemoryPack_Serialize() => global::MemoryPack.MemoryPackSerializer.Serialize(in _person);
 
     [Benchmark]
-    public Person? MemoryPack_Deserialize() => _memoryPackSerializer.Deserialize<Person>(_memoryPackSerializerBytes);
+    public Person? MemoryPack_Deserialize() => global::MemoryPack.MemoryPackSerializer.Deserialize<Person>(_memoryPackSerializerBytes);
+
+    [Benchmark]
+    public byte[] IMemoryPack_Serialize() => _memoryPackSerializer.Serialize(in _person);
+
+    [Benchmark]
+    public Person? IMemoryPack_Deserialize() => _memoryPackSerializer.Deserialize<Person>(_memoryPackSerializerBytes);
 
     [Benchmark]
     public Person MemoryPack() => SerializeDeserialize(_memoryPackSerializer);
+
+    //[Benchmark]
+    //public Span<byte> HyperSerializer_Serialize() => Hyper.HyperSerializer<Person>.Serialize(_person);
+
+    //[Benchmark]
+    //public Person? HyperSerializer_Deserialize() => Hyper.HyperSerializer<Person>.Deserialize(_hyperSerializerBytes);
+
+    //[Benchmark]
+    //public byte[] BinaryPack_Serialize() => BinaryPack.BinaryConverter.Serialize(_person);
+
+    //[Benchmark]
+    //public Person? BinaryPack_Deserialize() => BinaryPack.BinaryConverter.Deserialize<Person?>(_binaryPackBytes);
 
 #endif
 
