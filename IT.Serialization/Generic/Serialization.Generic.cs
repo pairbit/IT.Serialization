@@ -8,8 +8,6 @@ namespace IT.Serialization.Generic;
 
 public abstract class Serialization<T> : ISerialization<T>
 {
-    #region IAsyncSerializer
-
     public virtual ValueTask SerializeAsync(in T? value, Stream stream, CancellationToken cancellationToken = default)
     {
         var bytes = Serialize(in value);
@@ -20,6 +18,22 @@ public abstract class Serialization<T> : ISerialization<T>
         return stream.WriteAsync(bytes, cancellationToken);
 #endif
     }
+
+    public virtual void Serialize(in T? value, Stream stream, CancellationToken cancellationToken = default)
+    {
+        var bytes = Serialize(value);
+        stream.Write(bytes, 0, bytes.Length);
+    }
+
+    public virtual void Serialize<TBufferWriter>(in T? value, in TBufferWriter writer)
+#if NET7_0_OR_GREATER
+         where TBufferWriter : IBufferWriter<byte>
+#else
+         where TBufferWriter : class, IBufferWriter<byte>
+#endif
+        => writer.Write(Serialize(in value));
+
+    public abstract byte[] Serialize(in T? value);
 
     public virtual async ValueTask<T?> DeserializeAsync(Stream stream, CancellationToken cancellationToken = default)
     {
@@ -43,26 +57,6 @@ public abstract class Serialization<T> : ISerialization<T>
             pool.Return(rented);
         }
     }
-
-    #endregion IAsyncSerializer
-
-    #region ISerializer
-
-    public virtual void Serialize(in T? value, Stream stream, CancellationToken cancellationToken = default)
-    {
-        var bytes = Serialize(value);
-        stream.Write(bytes, 0, bytes.Length);
-    }
-
-    public virtual void Serialize<TBufferWriter>(in T? value, in TBufferWriter writer)
-#if NET7_0_OR_GREATER
-         where TBufferWriter : IBufferWriter<byte>
-#else
-         where TBufferWriter : class, IBufferWriter<byte>
-#endif
-        => writer.Write(Serialize(in value));
-
-    public abstract byte[] Serialize(in T? value);
 
     public virtual int Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default)
     {
@@ -106,6 +100,4 @@ public abstract class Serialization<T> : ISerialization<T>
 
         return Deserialize(span, ref value);
     }
-
-    #endregion ISerializer
 }

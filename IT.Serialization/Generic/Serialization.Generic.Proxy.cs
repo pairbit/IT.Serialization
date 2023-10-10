@@ -15,17 +15,8 @@ public class SerializationProxy<T> : ISerialization<T>
         _serialization = serialization;
     }
 
-    #region IAsyncSerializer
-
     public ValueTask SerializeAsync(in T? value, Stream stream, CancellationToken cancellationToken = default)
         => _serialization.SerializeAsync(value, stream, cancellationToken);
-
-    public ValueTask<T?> DeserializeAsync(Stream stream, CancellationToken cancellationToken = default)
-        => _serialization.DeserializeAsync<T>(stream, cancellationToken);
-
-    #endregion IAsyncSerializer
-
-    #region ISerializer
 
     public void Serialize(in T? value, Stream stream, CancellationToken cancellationToken = default)
         => _serialization.Serialize(value, stream, cancellationToken);
@@ -41,6 +32,9 @@ public class SerializationProxy<T> : ISerialization<T>
     public byte[] Serialize(in T? value)
          => _serialization.Serialize(in value);
 
+    public ValueTask<T?> DeserializeAsync(Stream stream, CancellationToken cancellationToken = default)
+        => _serialization.DeserializeAsync<T>(stream, cancellationToken);
+
     public int Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default)
         => _serialization.Deserialize(stream, ref value, cancellationToken);
 
@@ -52,6 +46,4 @@ public class SerializationProxy<T> : ISerialization<T>
 
     public int Deserialize(in ReadOnlySequence<byte> sequence, ref T? value)
         => _serialization.Deserialize(in sequence, ref value);
-
-    #endregion ISerializer
 }

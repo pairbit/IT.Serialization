@@ -19,25 +19,12 @@ public class TextSerialization : ITextSerialization
         _resolver = resolver;
     }
 
-    #region IAsyncSerializer
-
-    public ValueTask SerializeAsync<T>(in T? value, Stream stream, CancellationToken cancellationToken)
-        => new(JsonSerializer.SerializeAsync(stream, value, _resolver));
-
-    public async ValueTask<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken)
-        => await JsonSerializer.DeserializeAsync<T>(stream, _resolver).ConfigureAwait(false);
-
-    public ValueTask SerializeAsync(Type type, Object? value, Stream stream, CancellationToken cancellationToken)
-        => new(JsonSerializer.NonGeneric.SerializeAsync(type, stream, value, _resolver));
-
-    public async ValueTask<Object?> DeserializeAsync(Type type, Stream stream, CancellationToken cancellationToken)
-        => await JsonSerializer.NonGeneric.DeserializeAsync(type, stream, _resolver).ConfigureAwait(false);
-
-    #endregion IAsyncSerializer
-
     #region ISerializer
 
     #region Generic
+
+    public ValueTask SerializeAsync<T>(in T? value, Stream stream, CancellationToken cancellationToken)
+        => new(JsonSerializer.SerializeAsync(stream, value, _resolver));
 
     public void Serialize<T>(in T? value, Stream stream, CancellationToken cancellationToken)
         => JsonSerializer.Serialize(stream, value, _resolver);
@@ -50,19 +37,22 @@ public class TextSerialization : ITextSerialization
 #endif
         => throw new NotImplementedException();
 
-    public Byte[] Serialize<T>(in T? value)
+    public byte[] Serialize<T>(in T? value)
         => JsonSerializer.Serialize(value, _resolver);
 
-    public Int32 Deserialize<T>(Stream stream, ref T? value, CancellationToken cancellationToken)
+    public async ValueTask<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken)
+        => await JsonSerializer.DeserializeAsync<T>(stream, _resolver).ConfigureAwait(false);
+
+    public int Deserialize<T>(Stream stream, ref T? value, CancellationToken cancellationToken)
     {
         value = JsonSerializer.Deserialize<T>(stream, _resolver);
-        return (Int32)stream.Length;
+        return (int)stream.Length;
     }
 
-    public Int32 Deserialize<T>(ReadOnlySpan<Byte> span, ref T? value)
+    public int Deserialize<T>(ReadOnlySpan<byte> span, ref T? value)
     {
         var len = span.Length;
-        var pool = ArrayPool<Byte>.Shared;
+        var pool = ArrayPool<byte>.Shared;
         var rented = pool.Rent(len);
         try
         {
@@ -76,7 +66,7 @@ public class TextSerialization : ITextSerialization
         }
     }
 
-    public Int32 Deserialize<T>(ReadOnlyMemory<Byte> memory, ref T? value)
+    public int Deserialize<T>(ReadOnlyMemory<byte> memory, ref T? value)
     {
         if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
         {
@@ -88,7 +78,7 @@ public class TextSerialization : ITextSerialization
 
             var consumed = segment.Count;
 
-            if ((array.Length - offset) == consumed)
+            if (array.Length - offset == consumed)
             {
                 value = JsonSerializer.Deserialize<T>(array, offset, _resolver);
                 return consumed;
@@ -96,7 +86,7 @@ public class TextSerialization : ITextSerialization
         }
         var span = memory.Span;
         var len = span.Length;
-        var pool = ArrayPool<Byte>.Shared;
+        var pool = ArrayPool<byte>.Shared;
         var rented = pool.Rent(len);
         try
         {
@@ -110,17 +100,20 @@ public class TextSerialization : ITextSerialization
         }
     }
 
-    public Int32 Deserialize<T>(in ReadOnlySequence<Byte> sequence, ref T? value)
+    public int Deserialize<T>(in ReadOnlySequence<byte> sequence, ref T? value)
         => throw new NotImplementedException();
 
     #endregion Generic
 
     #region NonGeneric
 
-    public void Serialize(Type type, Object? value, Stream stream, CancellationToken cancellationToken)
+    public ValueTask SerializeAsync(Type type, object? value, Stream stream, CancellationToken cancellationToken)
+        => new(JsonSerializer.NonGeneric.SerializeAsync(type, stream, value, _resolver));
+
+    public void Serialize(Type type, object? value, Stream stream, CancellationToken cancellationToken)
         => JsonSerializer.NonGeneric.Serialize(type, stream, value, _resolver);
 
-    public void Serialize<TBufferWriter>(Type type, Object? value, in TBufferWriter writer)
+    public void Serialize<TBufferWriter>(Type type, object? value, in TBufferWriter writer)
 #if NET7_0_OR_GREATER
          where TBufferWriter : IBufferWriter<byte>
 #else
@@ -128,19 +121,22 @@ public class TextSerialization : ITextSerialization
 #endif
         => throw new NotImplementedException();
 
-    public Byte[] Serialize(Type type, Object? value)
+    public byte[] Serialize(Type type, object? value)
         => JsonSerializer.NonGeneric.Serialize(type, value, _resolver);
 
-    public Int32 Deserialize(Type type, Stream stream, ref Object? value, CancellationToken cancellationToken)
+    public async ValueTask<object?> DeserializeAsync(Type type, Stream stream, CancellationToken cancellationToken)
+        => await JsonSerializer.NonGeneric.DeserializeAsync(type, stream, _resolver).ConfigureAwait(false);
+
+    public int Deserialize(Type type, Stream stream, ref object? value, CancellationToken cancellationToken)
     {
         value = JsonSerializer.NonGeneric.Deserialize(type, stream, _resolver);
-        return (Int32)stream.Length;
+        return (int)stream.Length;
     }
 
-    public Int32 Deserialize(Type type, ReadOnlySpan<Byte> span, ref Object? value)
+    public int Deserialize(Type type, ReadOnlySpan<byte> span, ref object? value)
     {
         var len = span.Length;
-        var pool = ArrayPool<Byte>.Shared;
+        var pool = ArrayPool<byte>.Shared;
         var rented = pool.Rent(len);
         try
         {
@@ -154,7 +150,7 @@ public class TextSerialization : ITextSerialization
         }
     }
 
-    public Int32 Deserialize(Type type, ReadOnlyMemory<Byte> memory, ref Object? value)
+    public int Deserialize(Type type, ReadOnlyMemory<byte> memory, ref object? value)
     {
         if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
         {
@@ -165,7 +161,7 @@ public class TextSerialization : ITextSerialization
             var offset = segment.Offset;
             var consumed = segment.Count;
 
-            if ((array.Length - offset) == consumed)
+            if (array.Length - offset == consumed)
             {
                 value = JsonSerializer.NonGeneric.Deserialize(type, array, offset, _resolver);
                 return consumed;
@@ -173,7 +169,7 @@ public class TextSerialization : ITextSerialization
         }
         var span = memory.Span;
         var len = span.Length;
-        var pool = ArrayPool<Byte>.Shared;
+        var pool = ArrayPool<byte>.Shared;
         var rented = pool.Rent(len);
         try
         {
@@ -187,7 +183,7 @@ public class TextSerialization : ITextSerialization
         }
     }
 
-    public Int32 Deserialize(Type type, in ReadOnlySequence<Byte> sequence, ref Object? value)
+    public int Deserialize(Type type, in ReadOnlySequence<byte> sequence, ref object? value)
         => throw new NotImplementedException();
 
     #endregion NonGeneric
@@ -206,14 +202,14 @@ public class TextSerialization : ITextSerialization
 #endif
         => writer.Write(JsonSerializer.ToJsonString(value, _resolver).AsSpan());
 
-    public String SerializeToText<T>(in T? value)
+    public string SerializeToText<T>(in T? value)
         => JsonSerializer.ToJsonString(value, _resolver);
 
-    public Int32 Deserialize<T>(ReadOnlySpan<Char> span, ref T? value)
+    public int Deserialize<T>(ReadOnlySpan<char> span, ref T? value)
     {
         var len = _encoding.GetByteCount(span);
 
-        var pool = ArrayPool<Byte>.Shared;
+        var pool = ArrayPool<byte>.Shared;
 
         var rented = pool.Rent(len);
 
@@ -231,10 +227,10 @@ public class TextSerialization : ITextSerialization
         }
     }
 
-    public Int32 Deserialize<T>(ReadOnlyMemory<Char> memory, ref T? value)
+    public int Deserialize<T>(ReadOnlyMemory<char> memory, ref T? value)
         => Deserialize(memory.Span, ref value);
 
-    public Int32 Deserialize<T>(in ReadOnlySequence<Char> sequence, ref T? value)
+    public int Deserialize<T>(in ReadOnlySequence<char> sequence, ref T? value)
     {
         if (sequence.IsSingleSegment)
         {
@@ -245,7 +241,7 @@ public class TextSerialization : ITextSerialization
 #endif
         }
 
-        Span<Char> span = stackalloc char[(int)sequence.Length];
+        Span<char> span = stackalloc char[(int)sequence.Length];
 
         sequence.CopyTo(span);
 
@@ -256,7 +252,7 @@ public class TextSerialization : ITextSerialization
 
     #region NonGeneric
 
-    public void SerializeToText<TBufferWriter>(Type type, Object? value, in TBufferWriter writer)
+    public void SerializeToText<TBufferWriter>(Type type, object? value, in TBufferWriter writer)
 #if NET7_0_OR_GREATER
          where TBufferWriter : IBufferWriter<char>
 #else
@@ -264,14 +260,14 @@ public class TextSerialization : ITextSerialization
 #endif
         => writer.Write(JsonSerializer.NonGeneric.ToJsonString(type, value, _resolver).AsSpan());
 
-    public String SerializeToText(Type type, Object? value)
+    public string SerializeToText(Type type, object? value)
         => JsonSerializer.NonGeneric.ToJsonString(type, value, _resolver);
 
-    public Int32 Deserialize(Type type, ReadOnlySpan<Char> span, ref Object? value)
+    public int Deserialize(Type type, ReadOnlySpan<char> span, ref object? value)
     {
         var len = _encoding.GetByteCount(span);
 
-        var pool = ArrayPool<Byte>.Shared;
+        var pool = ArrayPool<byte>.Shared;
 
         var rented = pool.Rent(len);
 
@@ -289,10 +285,10 @@ public class TextSerialization : ITextSerialization
         }
     }
 
-    public Int32 Deserialize(Type type, ReadOnlyMemory<Char> memory, ref Object? value)
+    public int Deserialize(Type type, ReadOnlyMemory<char> memory, ref object? value)
         => Deserialize(type, memory.Span, ref value);
 
-    public Int32 Deserialize(Type type, in ReadOnlySequence<Char> sequence, ref Object? value)
+    public int Deserialize(Type type, in ReadOnlySequence<char> sequence, ref object? value)
     {
         if (sequence.IsSingleSegment)
         {
@@ -303,7 +299,7 @@ public class TextSerialization : ITextSerialization
 #endif
         }
 
-        Span<Char> span = stackalloc char[(int)sequence.Length];
+        Span<char> span = stackalloc char[(int)sequence.Length];
 
         sequence.CopyTo(span);
 

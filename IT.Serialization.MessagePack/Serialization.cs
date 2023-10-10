@@ -16,25 +16,10 @@ public class Serialization : ISerialization
         _options = options;
     }
 
-    #region IAsyncSerializer
+    #region Generic
 
     public ValueTask SerializeAsync<T>(in T? value, Stream stream, CancellationToken cancellationToken)
         => new(MessagePackSerializer.SerializeAsync(stream, value, _options, cancellationToken));
-
-    public async ValueTask<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken)
-        => await MessagePackSerializer.DeserializeAsync<T>(stream, _options, cancellationToken).ConfigureAwait(false);
-
-    public ValueTask SerializeAsync(Type type, Object? value, Stream stream, CancellationToken cancellationToken)
-        => new(MessagePackSerializer.SerializeAsync(type, stream, value, _options, cancellationToken));
-
-    public ValueTask<Object?> DeserializeAsync(Type type, Stream stream, CancellationToken cancellationToken)
-        => MessagePackSerializer.DeserializeAsync(type, stream, _options, cancellationToken);
-
-    #endregion IAsyncSerializer
-
-    #region ISerializer
-
-    #region Generic
 
     public void Serialize<T>(in T? value, Stream stream, CancellationToken cancellationToken)
         => MessagePackSerializer.Serialize(stream, value, _options, cancellationToken);
@@ -47,17 +32,20 @@ public class Serialization : ISerialization
 #endif
         => MessagePackSerializer.Serialize(writer, value, _options);
 
-    public Byte[] Serialize<T>(in T? value)
+    public byte[] Serialize<T>(in T? value)
         => MessagePackSerializer.Serialize(value, _options);
 
-    public Int32 Deserialize<T>(Stream stream, ref T? value, CancellationToken cancellationToken)
+    public async ValueTask<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken)
+        => await MessagePackSerializer.DeserializeAsync<T>(stream, _options, cancellationToken).ConfigureAwait(false);
+
+    public int Deserialize<T>(Stream stream, ref T? value, CancellationToken cancellationToken)
     {
         value = MessagePackSerializer.Deserialize<T>(stream, _options, cancellationToken);
 
-        return (Int32)stream.Length;
+        return (int)stream.Length;
     }
 
-    public Int32 Deserialize<T>(ReadOnlySpan<Byte> span, ref T? value)
+    public int Deserialize<T>(ReadOnlySpan<byte> span, ref T? value)
     {
         var array = new byte[span.Length];
 
@@ -67,35 +55,38 @@ public class Serialization : ISerialization
 
         value = MessagePackSerializer.Deserialize<T>(ref reader, _options);
 
-        return (Int32)reader.Consumed;
+        return (int)reader.Consumed;
     }
 
-    public Int32 Deserialize<T>(ReadOnlyMemory<Byte> memory, ref T? value)
+    public int Deserialize<T>(ReadOnlyMemory<byte> memory, ref T? value)
     {
         var reader = new MessagePackReader(memory);
 
         value = MessagePackSerializer.Deserialize<T>(ref reader, _options);
 
-        return (Int32)reader.Consumed;
+        return (int)reader.Consumed;
     }
 
-    public Int32 Deserialize<T>(in ReadOnlySequence<Byte> sequence, ref T? value)
+    public int Deserialize<T>(in ReadOnlySequence<byte> sequence, ref T? value)
     {
         var reader = new MessagePackReader(in sequence);
 
         value = MessagePackSerializer.Deserialize<T>(ref reader, _options);
 
-        return (Int32)reader.Consumed;
+        return (int)reader.Consumed;
     }
 
     #endregion Generic
 
     #region NonGeneric
 
-    public void Serialize(Type type, Object? value, Stream stream, CancellationToken cancellationToken)
+    public ValueTask SerializeAsync(Type type, object? value, Stream stream, CancellationToken cancellationToken)
+        => new(MessagePackSerializer.SerializeAsync(type, stream, value, _options, cancellationToken));
+
+    public void Serialize(Type type, object? value, Stream stream, CancellationToken cancellationToken)
         => MessagePackSerializer.Serialize(type, stream, value, _options, cancellationToken);
 
-    public void Serialize<TBufferWriter>(Type type, Object? value, in TBufferWriter writer)
+    public void Serialize<TBufferWriter>(Type type, object? value, in TBufferWriter writer)
 #if NET7_0_OR_GREATER
          where TBufferWriter : IBufferWriter<byte>
 #else
@@ -103,17 +94,20 @@ public class Serialization : ISerialization
 #endif
         => MessagePackSerializer.Serialize(type, writer, value, _options);
 
-    public Byte[] Serialize(Type type, Object? value)
+    public byte[] Serialize(Type type, object? value)
         => MessagePackSerializer.Serialize(type, value, _options);
 
-    public Int32 Deserialize(Type type, Stream stream, ref Object? value, CancellationToken cancellationToken)
+    public ValueTask<object?> DeserializeAsync(Type type, Stream stream, CancellationToken cancellationToken)
+        => MessagePackSerializer.DeserializeAsync(type, stream, _options, cancellationToken);
+
+    public int Deserialize(Type type, Stream stream, ref object? value, CancellationToken cancellationToken)
     {
         value = MessagePackSerializer.Deserialize(type, stream, _options, cancellationToken);
 
-        return (Int32)stream.Length;
+        return (int)stream.Length;
     }
 
-    public Int32 Deserialize(Type type, ReadOnlySpan<Byte> span, ref Object? value)
+    public int Deserialize(Type type, ReadOnlySpan<byte> span, ref object? value)
     {
         var array = new byte[span.Length];
 
@@ -123,28 +117,26 @@ public class Serialization : ISerialization
 
         value = MessagePackSerializer.Deserialize(type, ref reader, _options);
 
-        return (Int32)reader.Consumed;
+        return (int)reader.Consumed;
     }
 
-    public Int32 Deserialize(Type type, ReadOnlyMemory<Byte> memory, ref Object? value)
+    public int Deserialize(Type type, ReadOnlyMemory<byte> memory, ref object? value)
     {
         var reader = new MessagePackReader(memory);
 
         value = MessagePackSerializer.Deserialize(type, ref reader, _options);
 
-        return (Int32)reader.Consumed;
+        return (int)reader.Consumed;
     }
 
-    public Int32 Deserialize(Type type, in ReadOnlySequence<Byte> sequence, ref Object? value)
+    public int Deserialize(Type type, in ReadOnlySequence<byte> sequence, ref object? value)
     {
         var reader = new MessagePackReader(in sequence);
 
         value = MessagePackSerializer.Deserialize(type, ref reader, _options);
 
-        return (Int32)reader.Consumed;
+        return (int)reader.Consumed;
     }
 
     #endregion NonGeneric
-
-    #endregion ISerializer
 }
