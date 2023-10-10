@@ -4,35 +4,35 @@ namespace System.Text;
 
 internal static class _Encoding
 {
-    public static unsafe Int32 GetByteCount(this Encoding encoding, ReadOnlySpan<Char> chars)
+    public static unsafe int GetByteCount(this Encoding encoding, ReadOnlySpan<char> chars)
     {
-        fixed (Char* charsPtr = chars)
+        fixed (char* charsPtr = chars)
             return encoding.GetByteCount(charsPtr, chars.Length);
     }
 
-    public static unsafe Int32 GetBytes(this Encoding encoding, ReadOnlySpan<Char> chars, Span<Byte> bytes)
+    public static unsafe int GetBytes(this Encoding encoding, ReadOnlySpan<char> chars, Span<byte> bytes)
     {
-        fixed (Char* charsPtr = chars)
-        fixed (Byte* bytesPtr = bytes)
+        fixed (char* charsPtr = chars)
+        fixed (byte* bytesPtr = bytes)
             return encoding.GetBytes(charsPtr, chars.Length, bytesPtr, bytes.Length);
     }
 
-    public static unsafe Int32 GetCharCount(this Encoding encoding, ReadOnlySpan<Byte> bytes)
+    public static unsafe int GetCharCount(this Encoding encoding, ReadOnlySpan<byte> bytes)
     {
-        fixed (Byte* bytesPtr = bytes)
+        fixed (byte* bytesPtr = bytes)
             return encoding.GetCharCount(bytesPtr, bytes.Length);
     }
 
-    public static unsafe Int32 GetChars(this Encoding encoding, ReadOnlySpan<Byte> bytes, Span<Char> chars)
+    public static unsafe int GetChars(this Encoding encoding, ReadOnlySpan<byte> bytes, Span<char> chars)
     {
-        fixed (Byte* bytesPtr = bytes)
-        fixed (Char* charsPtr = chars)
+        fixed (byte* bytesPtr = bytes)
+        fixed (char* charsPtr = chars)
             return encoding.GetChars(bytesPtr, bytes.Length, charsPtr, chars.Length);
     }
 
-    public static unsafe String GetString(this Encoding encoding, ReadOnlySpan<Byte> bytes)
+    public static unsafe string GetString(this Encoding encoding, ReadOnlySpan<byte> bytes)
     {
-        fixed (Byte* bytesPtr = bytes)
+        fixed (byte* bytesPtr = bytes)
             return encoding.GetString(bytesPtr, bytes.Length);
     }
 }
