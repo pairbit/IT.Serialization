@@ -2,32 +2,37 @@
 using System.Buffers;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace IT.Serialization;
 
-public interface IDeserializer : IAsyncDeserializer
+public interface IDeserializer
 {
     #region Generic
 
-    Int32 Deserialize<T>(Stream stream, ref T? value, CancellationToken cancellationToken = default);
+    ValueTask<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken = default);
 
-    Int32 Deserialize<T>(ReadOnlySpan<Byte> span, ref T? value);
+    int Deserialize<T>(Stream stream, ref T? value, CancellationToken cancellationToken = default);
 
-    Int32 Deserialize<T>(ReadOnlyMemory<Byte> memory, ref T? value);
+    int Deserialize<T>(ReadOnlySpan<byte> span, ref T? value);
 
-    Int32 Deserialize<T>(in ReadOnlySequence<Byte> sequence, ref T? value);
+    int Deserialize<T>(ReadOnlyMemory<byte> memory, ref T? value);
+
+    int Deserialize<T>(in ReadOnlySequence<byte> sequence, ref T? value);
 
     #endregion Generic
 
     #region NonGeneric
 
-    Int32 Deserialize(Type type, Stream stream, ref Object? value, CancellationToken cancellationToken = default);
+    ValueTask<object?> DeserializeAsync(Type type, Stream stream, CancellationToken cancellationToken = default);
 
-    Int32 Deserialize(Type type, ReadOnlySpan<Byte> span, ref Object? value);
+    int Deserialize(Type type, Stream stream, ref object? value, CancellationToken cancellationToken = default);
 
-    Int32 Deserialize(Type type, ReadOnlyMemory<Byte> memory, ref Object? value);
+    int Deserialize(Type type, ReadOnlySpan<byte> span, ref object? value);
 
-    Int32 Deserialize(Type type, in ReadOnlySequence<Byte> sequence, ref Object? value);
+    int Deserialize(Type type, ReadOnlyMemory<byte> memory, ref object? value);
+
+    int Deserialize(Type type, in ReadOnlySequence<byte> sequence, ref object? value);
 
     #endregion NonGeneric
 }

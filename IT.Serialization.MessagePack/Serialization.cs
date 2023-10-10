@@ -18,7 +18,7 @@ public class Serialization : ISerialization
 
     #region IAsyncSerializer
 
-    public ValueTask SerializeAsync<T>(T? value, Stream stream, CancellationToken cancellationToken)
+    public ValueTask SerializeAsync<T>(in T? value, Stream stream, CancellationToken cancellationToken)
         => new(MessagePackSerializer.SerializeAsync(stream, value, _options, cancellationToken));
 
     public async ValueTask<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken)

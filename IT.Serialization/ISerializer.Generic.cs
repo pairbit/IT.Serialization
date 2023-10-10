@@ -1,12 +1,14 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace IT.Serialization;
 
-public interface ISerializer<T> : IAsyncSerializer<T>
+public interface ISerializer<T>
 {
+    ValueTask SerializeAsync(in T? value, Stream stream, CancellationToken cancellationToken = default);
+
     void Serialize(in T? value, Stream stream, CancellationToken cancellationToken = default);
 
     void Serialize<TBufferWriter>(in T? value, in TBufferWriter writer)
@@ -16,5 +18,5 @@ public interface ISerializer<T> : IAsyncSerializer<T>
          where TBufferWriter : class, IBufferWriter<byte>;
 #endif
 
-    Byte[] Serialize(in T? value);
+    byte[] Serialize(in T? value);
 }

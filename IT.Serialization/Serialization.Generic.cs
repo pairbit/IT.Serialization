@@ -10,9 +10,9 @@ public abstract class Serialization<T> : ISerialization<T>
 {
     #region IAsyncSerializer
 
-    public virtual ValueTask SerializeAsync(T? value, Stream stream, CancellationToken cancellationToken = default)
+    public virtual ValueTask SerializeAsync(in T? value, Stream stream, CancellationToken cancellationToken = default)
     {
-        var bytes = Serialize(value);
+        var bytes = Serialize(in value);
 
 #if NETSTANDARD2_0
         return new(stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken));

@@ -17,7 +17,7 @@ public class SerializationProxy<T> : ISerialization<T>
 
     #region IAsyncSerializer
 
-    public ValueTask SerializeAsync(T? value, Stream stream, CancellationToken cancellationToken = default)
+    public ValueTask SerializeAsync(in T? value, Stream stream, CancellationToken cancellationToken = default)
         => _serialization.SerializeAsync(value, stream, cancellationToken);
 
     public ValueTask<T?> DeserializeAsync(Stream stream, CancellationToken cancellationToken = default)

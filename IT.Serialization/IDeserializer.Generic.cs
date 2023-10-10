@@ -2,16 +2,19 @@
 using System.Buffers;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace IT.Serialization;
 
-public interface IDeserializer<T> : IAsyncDeserializer<T>
+public interface IDeserializer<T>
 {
-    Int32 Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default);
+    ValueTask<T?> DeserializeAsync(Stream stream, CancellationToken cancellationToken = default);
 
-    Int32 Deserialize(ReadOnlySpan<Byte> span, ref T? value);
+    int Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default);
 
-    Int32 Deserialize(ReadOnlyMemory<Byte> memory, ref T? value);
+    int Deserialize(ReadOnlySpan<byte> span, ref T? value);
 
-    Int32 Deserialize(in ReadOnlySequence<Byte> sequence, ref T? value);
+    int Deserialize(ReadOnlyMemory<byte> memory, ref T? value);
+
+    int Deserialize(in ReadOnlySequence<byte> sequence, ref T? value);
 }
