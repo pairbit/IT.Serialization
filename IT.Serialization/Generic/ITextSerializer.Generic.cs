@@ -1,7 +1,6 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers;
 
-namespace IT.Serialization;
+namespace IT.Serialization.Generic;
 
 public interface ITextSerializer<T> : ISerializer<T>
 {
@@ -12,5 +11,5 @@ public interface ITextSerializer<T> : ISerializer<T>
          where TBufferWriter : class, IBufferWriter<char>;
 #endif
 
-    String SerializeToText(in T? value);
+    string SerializeToText(in T? value);
 }

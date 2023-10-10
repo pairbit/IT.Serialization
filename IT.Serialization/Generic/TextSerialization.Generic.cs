@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Text;
 
-namespace IT.Serialization;
+namespace IT.Serialization.Generic;
 
 public abstract class TextSerialization<T> : Serialization<T>, ITextSerialization<T>
 {
@@ -15,14 +15,14 @@ public abstract class TextSerialization<T> : Serialization<T>, ITextSerializatio
 
     #region ISerializer
 
-    public override Byte[] Serialize(in T? value)
+    public override byte[] Serialize(in T? value)
         => _encoding.GetBytes(SerializeToText(in value));
 
-    public override Int32 Deserialize(ReadOnlySpan<Byte> span, ref T? value)
+    public override int Deserialize(ReadOnlySpan<byte> span, ref T? value)
     {
         var len = _encoding.GetCharCount(span);
 
-        var pool = ArrayPool<Char>.Shared;
+        var pool = ArrayPool<char>.Shared;
 
         var rented = pool.Rent(len);
 
@@ -42,7 +42,7 @@ public abstract class TextSerialization<T> : Serialization<T>, ITextSerializatio
         }
     }
 
-    public override Int32 Deserialize(ReadOnlyMemory<Byte> memory, ref T? value) => Deserialize(memory.Span, ref value);
+    public override int Deserialize(ReadOnlyMemory<byte> memory, ref T? value) => Deserialize(memory.Span, ref value);
 
     #endregion ISerializer
 
@@ -56,14 +56,14 @@ public abstract class TextSerialization<T> : Serialization<T>, ITextSerializatio
 #endif
         => writer.Write(SerializeToText(in value).AsSpan());
 
-    public abstract String SerializeToText(in T? value);
+    public abstract string SerializeToText(in T? value);
 
-    public abstract Int32 Deserialize(ReadOnlySpan<Char> span, ref T? value);
+    public abstract int Deserialize(ReadOnlySpan<char> span, ref T? value);
 
-    public virtual Int32 Deserialize(ReadOnlyMemory<Char> memory, ref T? value)
+    public virtual int Deserialize(ReadOnlyMemory<char> memory, ref T? value)
         => Deserialize(memory.Span, ref value);
 
-    public virtual Int32 Deserialize(in ReadOnlySequence<Char> sequence, ref T? value)
+    public virtual int Deserialize(in ReadOnlySequence<char> sequence, ref T? value)
     {
         if (sequence.IsSingleSegment)
         {
@@ -74,7 +74,7 @@ public abstract class TextSerialization<T> : Serialization<T>, ITextSerializatio
 #endif
         }
 
-        Span<Char> span = stackalloc char[(int)sequence.Length];
+        Span<char> span = stackalloc char[(int)sequence.Length];
 
         sequence.CopyTo(span);
 

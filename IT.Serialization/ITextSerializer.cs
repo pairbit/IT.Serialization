@@ -14,20 +14,20 @@ public interface ITextSerializer : ISerializer
          where TBufferWriter : class, IBufferWriter<char>;
 #endif
 
-    String SerializeToText<T>(in T? value);
+    string SerializeToText<T>(in T? value);
 
     #endregion Generic
 
     #region NonGeneric
 
-    void SerializeToText<TBufferWriter>(Type type, Object? value, in TBufferWriter writer)
+    void SerializeToText<TBufferWriter>(Type type, object? value, in TBufferWriter writer)
 #if NET7_0_OR_GREATER
          where TBufferWriter : IBufferWriter<char>;
 #else
          where TBufferWriter : class, IBufferWriter<char>;
 #endif
 
-    String SerializeToText(Type type, Object? value);
+    string SerializeToText(Type type, object? value);
 
     #endregion NonGeneric
 }

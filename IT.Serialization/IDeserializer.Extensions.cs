@@ -7,47 +7,6 @@ namespace IT.Serialization;
 
 public static class xIDeserializer
 {
-    #region IDeserializer<T>
-
-    public static T? Deserialize<T>(this IDeserializer<T> deserializer, Stream stream, CancellationToken cancellationToken = default)
-    {
-        T? value = default;
-        deserializer.Deserialize(stream, ref value, cancellationToken);
-        return value;
-    }
-
-    public static T? Deserialize<T>(this IDeserializer<T> deserializer, ReadOnlySpan<Byte> span)
-    {
-        T? value = default;
-        deserializer.Deserialize(span, ref value);
-        return value;
-    }
-
-    public static T? Deserialize<T>(this IDeserializer<T> deserializer, ReadOnlyMemory<Byte> memory)
-    {
-        T? value = default;
-        deserializer.Deserialize(memory, ref value);
-        return value;
-    }
-
-    public static T? Deserialize<T>(this IDeserializer<T> deserializer, Byte[] array)
-    {
-        T? value = default;
-        deserializer.Deserialize(new Memory<Byte>(array), ref value);
-        return value;
-    }
-
-    public static T? Deserialize<T>(this IDeserializer<T> deserializer, in ReadOnlySequence<Byte> sequence)
-    {
-        T? value = default;
-        deserializer.Deserialize(in sequence, ref value);
-        return value;
-    }
-
-    #endregion IDeserializer<T>
-
-    #region IDeserializer
-
     #region Generic
 
     public static T? Deserialize<T>(this IDeserializer deserializer, Stream stream, CancellationToken cancellationToken = default)
@@ -57,28 +16,28 @@ public static class xIDeserializer
         return value;
     }
 
-    public static T? Deserialize<T>(this IDeserializer deserializer, ReadOnlySpan<Byte> span)
+    public static T? Deserialize<T>(this IDeserializer deserializer, ReadOnlySpan<byte> span)
     {
         T? value = default;
         deserializer.Deserialize(span, ref value);
         return value;
     }
 
-    public static T? Deserialize<T>(this IDeserializer deserializer, ReadOnlyMemory<Byte> memory)
+    public static T? Deserialize<T>(this IDeserializer deserializer, ReadOnlyMemory<byte> memory)
     {
         T? value = default;
         deserializer.Deserialize(memory, ref value);
         return value;
     }
 
-    public static T? Deserialize<T>(this IDeserializer deserializer, Byte[] array)
+    public static T? Deserialize<T>(this IDeserializer deserializer, byte[] array)
     {
         T? value = default;
-        deserializer.Deserialize(new Memory<Byte>(array), ref value);
+        deserializer.Deserialize(new ReadOnlyMemory<byte>(array), ref value);
         return value;
     }
 
-    public static T? Deserialize<T>(this IDeserializer deserializer, in ReadOnlySequence<Byte> sequence)
+    public static T? Deserialize<T>(this IDeserializer deserializer, in ReadOnlySequence<byte> sequence)
     {
         T? value = default;
         deserializer.Deserialize(in sequence, ref value);
@@ -89,42 +48,40 @@ public static class xIDeserializer
 
     #region NonGeneric
 
-    public static Object? Deserialize(this IDeserializer deserializer, Type type, Stream stream, CancellationToken cancellationToken = default)
+    public static object? Deserialize(this IDeserializer deserializer, Type type, Stream stream, CancellationToken cancellationToken = default)
     {
-        Object? value = default;
+        object? value = default;
         deserializer.Deserialize(type, stream, ref value, cancellationToken);
         return value;
     }
 
-    public static Object? Deserialize(this IDeserializer deserializer, Type type, ReadOnlySpan<Byte> span)
+    public static object? Deserialize(this IDeserializer deserializer, Type type, ReadOnlySpan<byte> span)
     {
-        Object? value = default;
+        object? value = default;
         deserializer.Deserialize(type, span, ref value);
         return value;
     }
 
-    public static Object? Deserialize(this IDeserializer deserializer, Type type, ReadOnlyMemory<Byte> memory)
+    public static object? Deserialize(this IDeserializer deserializer, Type type, ReadOnlyMemory<byte> memory)
     {
-        Object? value = default;
+        object? value = default;
         deserializer.Deserialize(type, memory, ref value);
         return value;
     }
 
-    public static Object? Deserialize(this IDeserializer deserializer, Type type, Byte[] array)
+    public static object? Deserialize(this IDeserializer deserializer, Type type, byte[] array)
     {
-        Object? value = default;
-        deserializer.Deserialize(type, new Memory<Byte>(array), ref value);
+        object? value = default;
+        deserializer.Deserialize(type, new ReadOnlyMemory<byte>(array), ref value);
         return value;
     }
 
-    public static Object? Deserialize(this IDeserializer deserializer, Type type, in ReadOnlySequence<Byte> sequence)
+    public static object? Deserialize(this IDeserializer deserializer, Type type, in ReadOnlySequence<byte> sequence)
     {
-        Object? value = default;
+        object? value = default;
         deserializer.Deserialize(type, in sequence, ref value);
         return value;
     }
 
     #endregion NonGeneric
-
-    #endregion IDeserializer
 }

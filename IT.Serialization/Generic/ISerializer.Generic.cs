@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IT.Serialization;
+namespace IT.Serialization.Generic;
 
 public interface ISerializer<T>
 {

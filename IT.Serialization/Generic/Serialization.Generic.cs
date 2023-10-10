@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IT.Serialization;
+namespace IT.Serialization.Generic;
 
 public abstract class Serialization<T> : ISerialization<T>
 {
@@ -23,8 +23,8 @@ public abstract class Serialization<T> : ISerialization<T>
 
     public virtual async ValueTask<T?> DeserializeAsync(Stream stream, CancellationToken cancellationToken = default)
     {
-        var len = checked((Int32)stream.Length);
-        var pool = ArrayPool<Byte>.Shared;
+        var len = checked((int)stream.Length);
+        var pool = ArrayPool<byte>.Shared;
         var rented = pool.Rent(len);
         try
         {
@@ -62,13 +62,13 @@ public abstract class Serialization<T> : ISerialization<T>
 #endif
         => writer.Write(Serialize(in value));
 
-    public abstract Byte[] Serialize(in T? value);
+    public abstract byte[] Serialize(in T? value);
 
-    public virtual Int32 Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default)
+    public virtual int Deserialize(Stream stream, ref T? value, CancellationToken cancellationToken = default)
     {
-        var len = checked((Int32)stream.Length);
+        var len = checked((int)stream.Length);
 
-        var pool = ArrayPool<Byte>.Shared;
+        var pool = ArrayPool<byte>.Shared;
 
         var rented = pool.Rent(len);
         try
@@ -85,11 +85,11 @@ public abstract class Serialization<T> : ISerialization<T>
         }
     }
 
-    public abstract Int32 Deserialize(ReadOnlySpan<Byte> span, ref T? value);
+    public abstract int Deserialize(ReadOnlySpan<byte> span, ref T? value);
 
-    public virtual Int32 Deserialize(ReadOnlyMemory<Byte> memory, ref T? value) => Deserialize(memory.Span, ref value);
+    public virtual int Deserialize(ReadOnlyMemory<byte> memory, ref T? value) => Deserialize(memory.Span, ref value);
 
-    public virtual Int32 Deserialize(in ReadOnlySequence<Byte> sequence, ref T? value)
+    public virtual int Deserialize(in ReadOnlySequence<byte> sequence, ref T? value)
     {
         if (sequence.IsSingleSegment)
         {
@@ -100,12 +100,12 @@ public abstract class Serialization<T> : ISerialization<T>
 #endif
         }
 
-        Span<Byte> span = stackalloc Byte[(Int32)sequence.Length];
+        Span<byte> span = stackalloc byte[(int)sequence.Length];
 
         sequence.CopyTo(span);
 
         return Deserialize(span, ref value);
     }
 
-#endregion ISerializer
+    #endregion ISerializer
 }

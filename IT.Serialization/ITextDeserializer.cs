@@ -7,21 +7,21 @@ public interface ITextDeserializer : IDeserializer
 {
     #region Generic
 
-    Int32 Deserialize<T>(ReadOnlySpan<Char> span, ref T? value);
+    int Deserialize<T>(ReadOnlySpan<char> span, ref T? value);
 
-    Int32 Deserialize<T>(ReadOnlyMemory<Char> memory, ref T? value);
+    int Deserialize<T>(ReadOnlyMemory<char> memory, ref T? value);
 
-    Int32 Deserialize<T>(in ReadOnlySequence<Char> sequence, ref T? value);
+    int Deserialize<T>(in ReadOnlySequence<char> sequence, ref T? value);
 
     #endregion Generic
 
     #region NonGeneric
 
-    Int32 Deserialize(Type type, ReadOnlySpan<Char> span, ref Object? value);
+    int Deserialize(Type type, ReadOnlySpan<char> span, ref object? value);
 
-    Int32 Deserialize(Type type, ReadOnlyMemory<Char> memory, ref Object? value);
+    int Deserialize(Type type, ReadOnlyMemory<char> memory, ref object? value);
 
-    Int32 Deserialize(Type type, in ReadOnlySequence<Char> sequence, ref Object? value);
+    int Deserialize(Type type, in ReadOnlySequence<char> sequence, ref object? value);
 
     #endregion NonGeneric
 }

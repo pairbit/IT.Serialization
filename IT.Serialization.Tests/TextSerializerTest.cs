@@ -1,3 +1,4 @@
+using IT.Serialization.Generic;
 using IT.Serialization.Tests.Data;
 
 namespace IT.Serialization.Tests;
