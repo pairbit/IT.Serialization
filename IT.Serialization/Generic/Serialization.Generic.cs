@@ -21,7 +21,7 @@ public abstract class Serialization<T> : ISerialization<T>
 
     public virtual void Serialize(in T? value, Stream stream, CancellationToken cancellationToken = default)
     {
-        var bytes = Serialize(value);
+        var bytes = Serialize(in value);
         stream.Write(bytes, 0, bytes.Length);
     }
 
